@@ -1,4 +1,4 @@
-package br.com.pyinkr.hplsql.dto;
+package br.com.antlr.hplsql.dto;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 public class RegraPraticaDto {
 
-	List<RegrasDto> listaOrdenadaDeRegras;
+	private List<RegrasDto> listaOrdenadaDeRegras;
 
 	public RegraPraticaDto() {
 		listaOrdenadaDeRegras = new ArrayList();

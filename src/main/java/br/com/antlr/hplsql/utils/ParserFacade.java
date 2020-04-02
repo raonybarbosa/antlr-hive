@@ -1,11 +1,11 @@
-package br.com.pyinkr.hplsql.utils;
+package br.com.antlr.hplsql.utils;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ParserRuleContext;
 
-import br.com.pyinkr.hplsql.antlr.HplsqlLexer;
-import br.com.pyinkr.hplsql.antlr.HplsqlParser;
+import br.com.antlr.hplsql.antlr.HplsqlLexer;
+import br.com.antlr.hplsql.antlr.HplsqlParser;
 
 public class ParserFacade {
 

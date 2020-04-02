@@ -1,4 +1,4 @@
-package br.com.pyinkr.hplsql.dto;
+package br.com.antlr.hplsql.dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,5 +9,4 @@ public class RegrasDto {
 
 	private String nomeRepresentativoRegra;
 	private int nivelVerticalOrdem;
-	private boolean check = false;
 }

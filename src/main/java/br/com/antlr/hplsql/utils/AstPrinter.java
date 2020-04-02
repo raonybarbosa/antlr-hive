@@ -1,4 +1,4 @@
-package br.com.pyinkr.hplsql.utils;
+package br.com.antlr.hplsql.utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,8 +7,8 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 
-import br.com.pyinkr.hplsql.antlr.HplsqlParser;
-import br.com.pyinkr.hplsql.dto.BoasPraticasDto;
+import br.com.antlr.hplsql.antlr.HplsqlParser;
+import br.com.antlr.hplsql.dto.BoasPraticasDto;
 
 public class AstPrinter {
 

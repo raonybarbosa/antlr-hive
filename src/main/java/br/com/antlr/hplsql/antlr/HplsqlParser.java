@@ -1,5 +1,5 @@
 // Generated from Hplsql.g4 by ANTLR 4.8
-package br.com.pyinkr.hplsql.antlr;
+package br.com.antlr.hplsql.antlr;
 
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;

@@ -1,4 +1,4 @@
-package br.com.pyinkr.hplsql.domain;
+package br.com.antlr.hplsql.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

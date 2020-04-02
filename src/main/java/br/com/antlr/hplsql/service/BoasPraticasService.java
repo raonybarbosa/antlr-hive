@@ -1,4 +1,4 @@
-package br.com.pyinkr.hplsql.service;
+package br.com.antlr.hplsql.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,18 +10,19 @@ import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.springframework.stereotype.Service;
 
-import br.com.pyinkr.hplsql.antlr.HplsqlLexer;
-import br.com.pyinkr.hplsql.antlr.HplsqlParser;
-import br.com.pyinkr.hplsql.dto.BoasPraticasDto;
-import br.com.pyinkr.hplsql.dto.EntradaComandoDto;
+import br.com.antlr.hplsql.antlr.HplsqlLexer;
+import br.com.antlr.hplsql.antlr.HplsqlParser;
+import br.com.antlr.hplsql.dto.BoasPraticasDto;
+import br.com.antlr.hplsql.dto.EntradaComandoDto;
 
 @Service
 public class BoasPraticasService {
 
 	private boolean ignoringWrappers = true;
-	List<BoasPraticasDto> lista = new ArrayList();
+	private List<BoasPraticasDto> lista;
 
 	public List<BoasPraticasDto> preencheEntrada(EntradaComandoDto entrada) {
+		lista = new ArrayList();
 		HplsqlLexer lexer = new HplsqlLexer(new ANTLRInputStream(entrada.getScript().toUpperCase()));
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		HplsqlParser parser = new HplsqlParser(tokens);
@@ -44,8 +45,8 @@ public class BoasPraticasService {
 		for (int i = 0; i < ctx.getChildCount(); i++) {
 			ParseTree element = ctx.getChild(i);
 			if (element instanceof RuleContext) {
-				System.out.println("RuleContext	" + HplsqlParser.ruleNames[((RuleContext) element).getRuleIndex()]);
-				System.out.println("Context		" + HplsqlParser.ruleNames[ctx.getRuleIndex()]);
+				//System.out.println("RuleContext	" + HplsqlParser.ruleNames[((RuleContext) element).getRuleIndex()]);
+				//System.out.println("Context		" + HplsqlParser.ruleNames[ctx.getRuleIndex()]);
 				listaBoasPraticas((RuleContext) element, indentation + (toBeIgnored ? 0 : 1));
 			}
 		}
