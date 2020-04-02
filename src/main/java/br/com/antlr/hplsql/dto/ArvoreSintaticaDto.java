@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class BoasPraticasDto {
+public class ArvoreSintaticaDto {
 
 	private String fragmento;
 	private String regra;

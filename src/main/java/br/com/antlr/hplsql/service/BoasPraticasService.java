@@ -2,45 +2,48 @@ package br.com.antlr.hplsql.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import br.com.antlr.hplsql.antlr.HplsqlLexer;
 import br.com.antlr.hplsql.antlr.HplsqlParser;
-import br.com.antlr.hplsql.component.ValidadorBoasPraticasComponent;
-import br.com.antlr.hplsql.dto.BoasPraticasDto;
+import br.com.antlr.hplsql.dto.ArvoreSintaticaDto;
 import br.com.antlr.hplsql.dto.EntradaComandoDto;
+import br.com.antlr.hplsql.dto.RegraPraticaDto;
+import br.com.antlr.hplsql.dto.RegrasDto;
 
 @Service
 public class BoasPraticasService {
 
 	private boolean ignoringWrappers = true;
-	private List<BoasPraticasDto> lista;
-
-	@Autowired
-	private ValidadorBoasPraticasComponent validadorBoasPraticasComponent;
+	private List<ArvoreSintaticaDto> lista;
+	private RegraPraticaDto regraPratica = new RegraPraticaDto();
 
 	public String preencheEntrada(EntradaComandoDto entrada) {
 		lista = new ArrayList();
-		HplsqlLexer lexer = new HplsqlLexer(new ANTLRInputStream(entrada.getScript().toUpperCase()));
-		CommonTokenStream tokens = new CommonTokenStream(lexer);
-		HplsqlParser parser = new HplsqlParser(tokens);
-		List<BoasPraticasDto> listaParser = this.print(parser.program());
-		return validadorBoasPraticasComponent.validarBoasPraticas(listaParser);
+		if (StringUtils.trimAllWhitespace(entrada.getScript()).toUpperCase().contains("CREATEEXTERNALTABLE")
+				|| StringUtils.trimAllWhitespace(entrada.getScript()).toUpperCase().contains("CREATETABLE")) {
+			HplsqlLexer lexer = new HplsqlLexer(new ANTLRInputStream(entrada.getScript().toUpperCase()));
+			CommonTokenStream tokens = new CommonTokenStream(lexer);
+			HplsqlParser parser = new HplsqlParser(tokens);
+			return this.validarBoasPraticas(this.print(parser.program()));
+		}
+		return "Não existe regra para esse comando";
 	}
 
-	public List<BoasPraticasDto> print(RuleContext ctx) {
+	private List<ArvoreSintaticaDto> print(RuleContext ctx) {
 		return listaBoasPraticas(ctx, 0);
 	}
 
-	private List<BoasPraticasDto> listaBoasPraticas(RuleContext ctx, int indentation) {
-		BoasPraticasDto boasPraticas = new BoasPraticasDto();
+	private List<ArvoreSintaticaDto> listaBoasPraticas(RuleContext ctx, int indentation) {
+		ArvoreSintaticaDto boasPraticas = new ArvoreSintaticaDto();
 		boolean toBeIgnored = ignoringWrappers && ctx.getChildCount() == 1
 				&& ctx.getChild(0) instanceof ParserRuleContext;
 		if (!toBeIgnored) {
@@ -55,5 +58,16 @@ public class BoasPraticasService {
 			}
 		}
 		return lista;
+	}
+
+	private String validarBoasPraticas(List<ArvoreSintaticaDto> listaArvoreSintatica) {
+		List<RegrasDto> retorno = regraPratica.getListaOrdenadaDeRegras().stream()
+				.filter(x -> listaArvoreSintatica.stream()
+						.filter(y -> y.getRegra().equalsIgnoreCase(x.getNomeRepresentativoRegra())).count() != 0)
+				.collect(Collectors.toList());
+		if (retorno.isEmpty()) {
+			return "Comando não cumpriu as boas praticas";
+		}
+		return "Comando cumpriu as boas praticas";
 	}
 }

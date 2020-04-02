@@ -17,10 +17,7 @@ public class RegraPraticaDto {
 
 	public RegraPraticaDto() {
 		listaOrdenadaDeRegras = new ArrayList();
-		RegrasDto regras1 = new RegrasDto();
 		this.setTipoScript("create_table_stmt");
-		regras1.setNomeRepresentativoRegra("create_table_stmt");
-		regras1.setNivelVerticalOrdem(0);
 		RegrasDto regras2 = new RegrasDto();
 		regras2.setNomeRepresentativoRegra("external");
 		regras2.setNivelVerticalOrdem(1);
@@ -31,7 +28,6 @@ public class RegraPraticaDto {
 		regras2.setNomeRepresentativoRegra("location");
 		regras2.setNivelVerticalOrdem(3);
 
-		listaOrdenadaDeRegras.add(regras1);
 		listaOrdenadaDeRegras.add(regras2);
 		listaOrdenadaDeRegras.add(regras3);
 		listaOrdenadaDeRegras.add(regras4);

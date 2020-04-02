@@ -8,19 +8,19 @@ import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import br.com.antlr.hplsql.antlr.HplsqlParser;
-import br.com.antlr.hplsql.dto.BoasPraticasDto;
+import br.com.antlr.hplsql.dto.ArvoreSintaticaDto;
 
 public class AstPrinter {
 
 	private boolean ignoringWrappers = true;
-	List<BoasPraticasDto> lista = new ArrayList();
+	List<ArvoreSintaticaDto> lista = new ArrayList();
 
-	public List<BoasPraticasDto> print(RuleContext ctx) {
+	public List<ArvoreSintaticaDto> print(RuleContext ctx) {
 		return listaBoasPraticas(ctx, 0);
 	}
 
-	private List<BoasPraticasDto> listaBoasPraticas(RuleContext ctx, int indentation) {
-		BoasPraticasDto boasPraticas = new BoasPraticasDto();
+	private List<ArvoreSintaticaDto> listaBoasPraticas(RuleContext ctx, int indentation) {
+		ArvoreSintaticaDto boasPraticas = new ArvoreSintaticaDto();
 		boolean toBeIgnored = ignoringWrappers && ctx.getChildCount() == 1
 				&& ctx.getChild(0) instanceof ParserRuleContext;
 		if (!toBeIgnored) {
