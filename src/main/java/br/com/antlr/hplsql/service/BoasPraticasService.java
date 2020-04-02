@@ -8,10 +8,12 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.antlr.hplsql.antlr.HplsqlLexer;
 import br.com.antlr.hplsql.antlr.HplsqlParser;
+import br.com.antlr.hplsql.component.ValidadorBoasPraticasComponent;
 import br.com.antlr.hplsql.dto.BoasPraticasDto;
 import br.com.antlr.hplsql.dto.EntradaComandoDto;
 
@@ -21,12 +23,16 @@ public class BoasPraticasService {
 	private boolean ignoringWrappers = true;
 	private List<BoasPraticasDto> lista;
 
-	public List<BoasPraticasDto> preencheEntrada(EntradaComandoDto entrada) {
+	@Autowired
+	private ValidadorBoasPraticasComponent validadorBoasPraticasComponent;
+
+	public String preencheEntrada(EntradaComandoDto entrada) {
 		lista = new ArrayList();
 		HplsqlLexer lexer = new HplsqlLexer(new ANTLRInputStream(entrada.getScript().toUpperCase()));
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		HplsqlParser parser = new HplsqlParser(tokens);
-		return this.print(parser.program());
+		List<BoasPraticasDto> listaParser = this.print(parser.program());
+		return validadorBoasPraticasComponent.validarBoasPraticas(listaParser);
 	}
 
 	public List<BoasPraticasDto> print(RuleContext ctx) {
@@ -45,8 +51,6 @@ public class BoasPraticasService {
 		for (int i = 0; i < ctx.getChildCount(); i++) {
 			ParseTree element = ctx.getChild(i);
 			if (element instanceof RuleContext) {
-				//System.out.println("RuleContext	" + HplsqlParser.ruleNames[((RuleContext) element).getRuleIndex()]);
-				//System.out.println("Context		" + HplsqlParser.ruleNames[ctx.getRuleIndex()]);
 				listaBoasPraticas((RuleContext) element, indentation + (toBeIgnored ? 0 : 1));
 			}
 		}
