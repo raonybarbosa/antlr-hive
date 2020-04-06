@@ -120,7 +120,7 @@ null_stmt :             // NULL statement (no operation)
      ;
 
 expr_stmt :             // Standalone expression
-       {!_input.LT(1).getText().equalsIgnoreCase("GO")}? expr
+       {_input.LT(1).getText().equalsIgnoreCase("GO")}? expr
      ;
 
 assignment_stmt :       // Assignment statement
@@ -217,11 +217,15 @@ declare_temporary_table_item :     // DECLARE TEMPORARY TABLE statement
      ;
      
 create_table_stmt :
-       T_CREATE T_TABLE (T_IF T_NOT T_EXISTS)? table_name create_table_preoptions? create_table_definition 
+       T_CREATE external? T_TABLE (T_IF T_NOT T_EXISTS)? table_name create_table_preoptions? create_table_definition
      ;
      
 create_local_temp_table_stmt :
        T_CREATE (T_LOCAL T_TEMPORARY | (T_SET | T_MULTISET)? T_VOLATILE) T_TABLE ident create_table_preoptions? create_table_definition
+     ;
+     
+external :
+      T_EXTERNAL
      ;
      
 create_table_definition :
@@ -313,12 +317,40 @@ create_table_options_td_item :
      ;
     
 create_table_options_hive_item :
-       create_table_hive_row_format
+        partitioned? create_table_hive_row_format stored_s
      | T_STORED T_AS ident
      ;
      
+partitioned :
+	T_PARTITIONED T_BY expr_partitioned
+	;
+	
+expr_partitioned :
+	T_OPEN_P column_name_type_comment (T_COMMA column_name_type_comment)* T_CLOSE_P
+	;
+	
+column_name_type_comment :
+	column_name dtype comment?
+	; 
+	
+comment :
+	T_COMMENT expr
+	;
+	
+stored_s :
+	T_STORED T_AS ident_expr* location? expr
+	;
+	
+ident_expr :
+	ident expr
+	;
+
+location :
+	T_LOCATION
+	;
+	
 create_table_hive_row_format :
-       T_ROW T_FORMAT T_DELIMITED create_table_hive_row_format_fields*
+       T_ROW T_FORMAT T_DELIMITED? create_table_hive_row_format_fields* 
      ;
      
 create_table_hive_row_format_fields :
@@ -327,6 +359,7 @@ create_table_hive_row_format_fields :
      | T_MAP T_KEYS T_TERMINATED T_BY expr
      | T_LINES T_TERMINATED T_BY expr
      | T_NULL T_DEFINED T_AS expr
+     | expr 
      ;
      
 create_table_options_mssql_item :
@@ -1295,6 +1328,7 @@ non_reserved_words :                      // Tokens that are not reserved words 
      | T_DIR
      | T_DIRECTORY
      | T_DISTINCT 
+     | T_PARTITIONED 
      | T_DISTRIBUTE
      | T_DO        
      | T_DOUBLE     
@@ -1493,6 +1527,7 @@ non_reserved_words :                      // Tokens that are not reserved words 
      | T_SUBSTRING
      | T_SUM
      | T_SUMMARY
+     | T_EXTERNAL
      | T_SYSDATE 
      | T_SYS_REFCURSOR     
      | T_TABLE
@@ -1742,10 +1777,12 @@ T_OVERWRITE       : O V E R W R I T E ;
 T_OWNER           : O W N E R ; 
 T_PACKAGE         : P A C K A G E ; 
 T_PARTITION       : P A R T I T I O N ; 
+T_EXTERNAL		  : E X T E R N A L ;
 T_PCTFREE         : P C T F R E E ; 
 T_PCTUSED         : P C T U S E D ;
 T_PLS_INTEGER     : P L S '_' I N T E G E R ;
 T_PRECISION       : P R E C I S I O N ; 
+T_PARTITIONED     : P A R T I T I O N E D ;
 T_PRESERVE        : P R E S E R V E ; 
 T_PRIMARY         : P R I M A R Y ;
 T_PRINT           : P R I N T ; 

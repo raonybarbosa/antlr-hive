@@ -22,11 +22,11 @@ public class RegraPraticaDto {
 		regras2.setNomeRepresentativoRegra("external");
 		regras2.setNivelVerticalOrdem(1);
 		RegrasDto regras3 = new RegrasDto();
-		regras2.setNomeRepresentativoRegra("partitioned");
-		regras2.setNivelVerticalOrdem(2);
+		regras3.setNomeRepresentativoRegra("partitioned");
+		regras3.setNivelVerticalOrdem(2);
 		RegrasDto regras4 = new RegrasDto();
-		regras2.setNomeRepresentativoRegra("location");
-		regras2.setNivelVerticalOrdem(3);
+		regras4.setNomeRepresentativoRegra("location");
+		regras4.setNivelVerticalOrdem(3);
 
 		listaOrdenadaDeRegras.add(regras2);
 		listaOrdenadaDeRegras.add(regras3);

@@ -21,12 +21,12 @@ import br.com.antlr.hplsql.dto.RegrasDto;
 
 @Service
 public class BoasPraticasService {
-
 	private boolean ignoringWrappers = true;
 	private List<ArvoreSintaticaDto> lista;
-	private RegraPraticaDto regraPratica = new RegraPraticaDto();
+	private RegraPraticaDto regraPratica;
 
 	public String preencheEntrada(EntradaComandoDto entrada) {
+		regraPratica = new RegraPraticaDto();
 		lista = new ArrayList();
 		if (StringUtils.trimAllWhitespace(entrada.getScript()).toUpperCase().contains("CREATEEXTERNALTABLE")
 				|| StringUtils.trimAllWhitespace(entrada.getScript()).toUpperCase().contains("CREATETABLE")) {
@@ -65,8 +65,14 @@ public class BoasPraticasService {
 				.filter(x -> listaArvoreSintatica.stream()
 						.filter(y -> y.getRegra().equalsIgnoreCase(x.getNomeRepresentativoRegra())).count() != 0)
 				.collect(Collectors.toList());
-		if (retorno.isEmpty()) {
-			return "Comando não cumpriu as boas praticas";
+		List<RegrasDto> retorno2 = regraPratica.getListaOrdenadaDeRegras().stream()
+				.filter(x -> retorno.stream()
+						.filter(y -> y.getNomeRepresentativoRegra().equalsIgnoreCase(x.getNomeRepresentativoRegra()))
+						.count() == 0)
+				.collect(Collectors.toList());
+		if (retorno.size() != regraPratica.getListaOrdenadaDeRegras().size()) {
+			return "Comando não cumpriu as boas praticas pois faltam as seguintes regras: " + retorno2.stream()
+					.map(regrasDto -> regrasDto.getNomeRepresentativoRegra()).collect(Collectors.toList()).toString();
 		}
 		return "Comando cumpriu as boas praticas";
 	}
