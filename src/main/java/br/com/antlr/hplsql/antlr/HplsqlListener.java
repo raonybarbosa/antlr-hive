@@ -659,6 +659,66 @@ public interface HplsqlListener extends ParseTreeListener {
 	 */
 	void exitAlter_table_item(HplsqlParser.Alter_table_itemContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link HplsqlParser#alter_table_add}.
+	 * @param ctx the parse tree
+	 */
+	void enterAlter_table_add(HplsqlParser.Alter_table_addContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link HplsqlParser#alter_table_add}.
+	 * @param ctx the parse tree
+	 */
+	void exitAlter_table_add(HplsqlParser.Alter_table_addContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link HplsqlParser#alter_table_add_columns}.
+	 * @param ctx the parse tree
+	 */
+	void enterAlter_table_add_columns(HplsqlParser.Alter_table_add_columnsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link HplsqlParser#alter_table_add_columns}.
+	 * @param ctx the parse tree
+	 */
+	void exitAlter_table_add_columns(HplsqlParser.Alter_table_add_columnsContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link HplsqlParser#alter_table_add_columns_item}.
+	 * @param ctx the parse tree
+	 */
+	void enterAlter_table_add_columns_item(HplsqlParser.Alter_table_add_columns_itemContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link HplsqlParser#alter_table_add_columns_item}.
+	 * @param ctx the parse tree
+	 */
+	void exitAlter_table_add_columns_item(HplsqlParser.Alter_table_add_columns_itemContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link HplsqlParser#alter_table_columns}.
+	 * @param ctx the parse tree
+	 */
+	void enterAlter_table_columns(HplsqlParser.Alter_table_columnsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link HplsqlParser#alter_table_columns}.
+	 * @param ctx the parse tree
+	 */
+	void exitAlter_table_columns(HplsqlParser.Alter_table_columnsContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link HplsqlParser#alter_table_columns_item}.
+	 * @param ctx the parse tree
+	 */
+	void enterAlter_table_columns_item(HplsqlParser.Alter_table_columns_itemContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link HplsqlParser#alter_table_columns_item}.
+	 * @param ctx the parse tree
+	 */
+	void exitAlter_table_columns_item(HplsqlParser.Alter_table_columns_itemContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link HplsqlParser#dtype_alter}.
+	 * @param ctx the parse tree
+	 */
+	void enterDtype_alter(HplsqlParser.Dtype_alterContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link HplsqlParser#dtype_alter}.
+	 * @param ctx the parse tree
+	 */
+	void exitDtype_alter(HplsqlParser.Dtype_alterContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link HplsqlParser#alter_table_add_constraint}.
 	 * @param ctx the parse tree
 	 */

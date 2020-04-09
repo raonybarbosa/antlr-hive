@@ -26,7 +26,6 @@ public class BoasPraticasService {
 	private RegraPraticaDto regraPratica;
 
 	public String preencheEntrada(EntradaComandoDto entrada) {
-		regraPratica = new RegraPraticaDto();
 		lista = new ArrayList();
 		if (StringUtils.trimAllWhitespace(entrada.getScript()).toUpperCase().contains("CREATEEXTERNALTABLE")
 				|| StringUtils.trimAllWhitespace(entrada.getScript()).toUpperCase().contains("CREATETABLE")) {
@@ -38,7 +37,15 @@ public class BoasPraticasService {
 		return "Não existe regra para esse comando";
 	}
 
-	private List<ArvoreSintaticaDto> print(RuleContext ctx) {
+	public List<ArvoreSintaticaDto> retornoArvoreSintatica(String a) {
+		lista = new ArrayList();
+		HplsqlLexer lexer = new HplsqlLexer(new ANTLRInputStream(a.toUpperCase()));
+		CommonTokenStream tokens = new CommonTokenStream(lexer);
+		HplsqlParser parser = new HplsqlParser(tokens);
+		return this.print(parser.program());
+	}
+
+	public List<ArvoreSintaticaDto> print(RuleContext ctx) {
 		return listaBoasPraticas(ctx, 0);
 	}
 
@@ -54,6 +61,8 @@ public class BoasPraticasService {
 		for (int i = 0; i < ctx.getChildCount(); i++) {
 			ParseTree element = ctx.getChild(i);
 			if (element instanceof RuleContext) {
+				System.out.println("RuleContext	" + HplsqlParser.ruleNames[((RuleContext) element).getRuleIndex()]);
+				System.out.println("Context		" + HplsqlParser.ruleNames[ctx.getRuleIndex()]);
 				listaBoasPraticas((RuleContext) element, indentation + (toBeIgnored ? 0 : 1));
 			}
 		}
@@ -61,6 +70,7 @@ public class BoasPraticasService {
 	}
 
 	private String validarBoasPraticas(List<ArvoreSintaticaDto> listaArvoreSintatica) {
+		regraPratica = new RegraPraticaDto();
 		List<RegrasDto> retorno = regraPratica.getListaOrdenadaDeRegras().stream()
 				.filter(x -> listaArvoreSintatica.stream()
 						.filter(y -> y.getRegra().equalsIgnoreCase(x.getNomeRepresentativoRegra())).count() != 0)

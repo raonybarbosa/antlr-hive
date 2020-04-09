@@ -11,7 +11,7 @@
     <groupId>br.com.antlr</groupId>
     <artifactId>antlr-hive</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>hplsql</name>
+    <name>antlr-hive</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>
