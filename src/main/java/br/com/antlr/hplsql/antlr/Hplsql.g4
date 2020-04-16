@@ -3,7 +3,7 @@
    contributor license agreements.  See the NOTICE file distributed with 
    this work for additional information regarding copyright ownership.
    The ASF licenses this file to You under the Apache License, Version 2.0
-   (the "License"); you may not use this file except in compliance with 
+   (the "License"); you may not use this file except in compliance with
    the License.  You may obtain a copy of the License at
        http://www.apache.org/licenses/LICENSE-2.0
    Unless required by applicable law or agreed to in writing, software
@@ -98,7 +98,7 @@ stmt :
      | hive     
      | host
      | null_stmt
-     | expr_stmt     
+//     | expr_stmt     
      | semicolon_stmt      // Placed here to allow null statements ;;...          
      ;
      
@@ -120,7 +120,7 @@ null_stmt :             // NULL statement (no operation)
      ;
 
 expr_stmt :             // Standalone expression
-       {_input.LT(1).getText().equalsIgnoreCase("GO")}? expr
+       {!_input.LT(1).getText().equalsIgnoreCase("GO")}? expr
      ;
 
 assignment_stmt :       // Assignment statement
@@ -219,31 +219,31 @@ declare_temporary_table_item :     // DECLARE TEMPORARY TABLE statement
 create_table_stmt :
        T_CREATE external? T_TABLE (T_IF T_NOT T_EXISTS)? table_name create_table_preoptions? create_table_definition
      ;
-     
+
 create_local_temp_table_stmt :
        T_CREATE (T_LOCAL T_TEMPORARY | (T_SET | T_MULTISET)? T_VOLATILE) T_TABLE ident create_table_preoptions? create_table_definition
-     ;
-     
+    ;
+
 external :
       T_EXTERNAL
-     ;
-     
+    ;
+
 create_table_definition :
       (T_AS? T_OPEN_P select_stmt T_CLOSE_P | T_AS? select_stmt | T_OPEN_P create_table_columns T_CLOSE_P | T_LIKE table_name) create_table_options?
-     ;
-     
+	;
+
 create_table_columns :         
        create_table_columns_item (T_COMMA create_table_columns_item)*
-     ;
-       
+    ;
+
 create_table_columns_item :
        column_name dtype dtype_len? dtype_attr* create_table_column_inline_cons* 
-     | (T_CONSTRAINT ident)? create_table_column_cons
-     ;
-     
+    | (T_CONSTRAINT ident)? create_table_column_cons
+    ;
+
 column_name :
-       ident
-     ;
+		ident
+	;
 
 create_table_column_inline_cons :
        dtype_default
@@ -255,7 +255,7 @@ create_table_column_inline_cons :
      | T_AUTO_INCREMENT
      | T_ENABLE
      ;
-     
+
 create_table_column_cons :
        T_PRIMARY T_KEY T_CLUSTERED? T_OPEN_P ident (T_ASC | T_DESC)? (T_COMMA ident (T_ASC | T_DESC)?)* T_CLOSE_P T_ENABLE? index_storage_clause?
      | T_FOREIGN T_KEY T_OPEN_P ident (T_COMMA ident)* T_CLOSE_P T_REFERENCES table_name T_OPEN_P ident (T_COMMA ident)* T_CLOSE_P create_table_fk_action* 
@@ -373,17 +373,88 @@ create_table_options_mysql_item :
      | T_DEFAULT? (T_CHARACTER T_SET | T_CHARSET) T_EQUAL? expr
      | T_ENGINE T_EQUAL? expr
      ;
-     
+
 alter_table_stmt :
        T_ALTER T_TABLE table_name alter_table_item
      ;
-     
+
 alter_table_item :
-       alter_table_add_constraint
+		T_ADD2 alter_table_add
+	|	T_RENAME T_TO table_name
+	|	T_DROP T_COLUMN? column_name
+	|	T_REPLACE T_COLUMNS T_OPEN_P alter_table_columns T_CLOSE_P
+	|	T_CHANGE alter_table_columns_item
+	;
+
+alter_table_add :
+      alter_table_add_constraint
+	| alter_table_add_columns
+    ;
+
+alter_table_add_columns :
+	T_COLUMNS alter_table_add_columns_item
+    ;
+
+alter_table_add_columns_item :
+     (T_AS? T_OPEN_P select_stmt T_CLOSE_P
+	| T_AS? select_stmt
+	| T_OPEN_P alter_table_columns T_CLOSE_P
+	| T_LIKE table_name)
+    ;
+
+alter_table_columns :
+		alter_table_columns_item comment? (T_COMMA alter_table_columns_item comment?)*
+	;
+
+alter_table_columns_item :
+		column_name dtype_alter dtype_len? dtype_attr* create_table_column_inline_cons* 
+	 | (T_CONSTRAINT ident)? create_table_column_cons
+    ;
+
+dtype_alter :                  // Data types
+       T_CHAR
+     | T_CHARACTER
+     | T_BIGINT
+     | T_BINARY_DOUBLE
+     | T_BINARY_FLOAT
+     | T_BINARY_INTEGER
+     | T_BIT
+     | T_DATE
+     | T_DATETIME
+     | T_DEC
+     | T_DECIMAL
+     | T_DOUBLE T_PRECISION?
+     | T_FLOAT
+     | T_INT
+     | T_INT2
+     | T_INT4
+     | T_INT8
+     | T_INTEGER
+	 | T_MONEY
+     | T_NCHAR
+     | T_NVARCHAR
+     | T_NUMBER
+     | T_NUMERIC
+     | T_PLS_INTEGER
+     | T_REAL
+     | T_RESULT_SET_LOCATOR T_VARYING
+     | T_SIMPLE_FLOAT
+     | T_SIMPLE_DOUBLE
+     | T_SIMPLE_INTEGER
+     | T_SMALLINT
+     | T_SMALLDATETIME
+     | T_STRING
+     | T_SYS_REFCURSOR
+     | T_TIMESTAMP
+     | T_TINYINT
+     | T_VARCHAR
+     | T_VARCHAR2
+     | T_XML
+     | ident ('%' (T_TYPE | T_ROWTYPE))?             // User-defined or derived data type
      ;
      
 alter_table_add_constraint :
-       T_ADD2 (T_CONSTRAINT ident)? alter_table_add_constraint_item
+	 (T_CONSTRAINT ident)? alter_table_add_constraint_item
      ;
      
 alter_table_add_constraint_item :
@@ -391,7 +462,7 @@ alter_table_add_constraint_item :
      | T_FOREIGN T_KEY T_OPEN_P ident (T_COMMA ident)* T_CLOSE_P T_REFERENCES table_name T_OPEN_P ident (T_COMMA ident)* T_CLOSE_P create_table_fk_action*
      | T_DEFAULT expr T_FOR ident
      ;
-     
+
 dtype :                  // Data types
        T_CHAR
      | T_CHARACTER
@@ -411,6 +482,7 @@ dtype :                  // Data types
      | T_INT4
      | T_INT8
      | T_INTEGER
+	 | T_MONEY
      | T_NCHAR
      | T_NVARCHAR
      | T_NUMBER
@@ -1268,20 +1340,22 @@ non_reserved_words :                      // Tokens that are not reserved words 
      | T_BYTE
      | T_CALL     
      | T_CALLER 
-     | T_CASCADE     
-     | T_CASE   
+     | T_CASCADE
+     | T_CASE
      | T_CASESPECIFIC
      | T_CAST
-     | T_CHAR  
-     | T_CHARACTER 
-     | T_CHARSET     
-     | T_CLIENT     
-     | T_CLOSE 
+     | T_CHANGE
+     | T_CHAR
+     | T_CHARACTER
+     | T_CHARSET
+     | T_CLIENT
+     | T_CLOSE
      | T_CLUSTERED
      | T_CMP
      | T_COLLECT
-     | T_COLLECTION  
+     | T_COLLECTION
      | T_COLUMN
+     | T_COLUMNS
      | T_COMMENT  
      | T_COMPRESS     
      | T_CONSTANT     
@@ -1428,6 +1502,7 @@ non_reserved_words :                      // Tokens that are not reserved words 
      | T_MICROSECOND
      | T_MICROSECONDS
      | T_MIN
+     | T_MONEY	 
      | T_MULTISET
      | T_NCHAR
      | T_NEW
@@ -1474,8 +1549,9 @@ non_reserved_words :                      // Tokens that are not reserved words 
      | T_RAISE
      | T_RANK  
      | T_REAL
-     | T_REFERENCES     
+     | T_REFERENCES
      | T_REGEXP
+     | T_RENAME	 
      | T_RR     
      | T_REPLACE
      | T_RESIGNAL
@@ -1603,6 +1679,7 @@ T_CASCADE         : C A S C A D E ;
 T_CASE            : C A S E ;
 T_CASESPECIFIC    : C A S E S P E C I F I C ; 
 T_CAST            : C A S T ;
+T_CHANGE          : C H A N G E ;
 T_CHAR            : C H A R ;
 T_CHARACTER       : C H A R A C T E R ;
 T_CHARSET         : C H A R S E T ;
@@ -1611,8 +1688,9 @@ T_CLOSE           : C L O S E ;
 T_CLUSTERED       : C L U S T E R E D;
 T_CMP             : C M P ; 
 T_COLLECT         : C O L L E C T ; 
-T_COLLECTION      : C O L L E C T I O N ; 
+T_COLLECTION      : C O L L E C T I O N ;
 T_COLUMN          : C O L U M N ;
+T_COLUMNS         : C O L U M N S ;
 T_COMMENT         : C O M M E N T;
 T_CONSTANT        : C O N S T A N T ;
 T_COMMIT          : C O M M I T ; 
@@ -1749,6 +1827,7 @@ T_MESSAGE_TEXT    : M E S S A G E '_' T E X T ;
 T_MICROSECOND     : M I C R O S E C O N D ;
 T_MICROSECONDS    : M I C R O S E C O N D S;
 T_MIN             : M I N ;
+T_MONEY           : M O N E Y;
 T_MULTISET        : M U L T I S E T ; 
 T_NCHAR           : N C H A R ; 
 T_NEW             : N E W ;
@@ -1794,8 +1873,9 @@ T_QUIT            : Q U I T ;
 T_QUOTED_IDENTIFIER : Q U O T E D '_' I D E N T I F I E R ;
 T_RAISE           : R A I S E ;
 T_REAL            : R E A L ; 
-T_REFERENCES      : R E F E R E N C E S ; 
+T_REFERENCES      : R E F E R E N C E S ;
 T_REGEXP          : R E G E X P ;
+T_RENAME	      : R E N A M E ;
 T_REPLACE         : R E P L A C E ; 
 T_RESIGNAL        : R E S I G N A L ;
 T_RESTRICT        : R E S T R I C T ; 
