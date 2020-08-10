@@ -1,5 +1,5 @@
 // Generated from Hplsql.g4 by ANTLR 4.8
-package br.com.antlr.hplsql.antlr;
+package br.com.antlr.hplsql.antlr.hive;
 
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 

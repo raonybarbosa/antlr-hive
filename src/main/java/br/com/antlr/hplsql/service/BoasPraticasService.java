@@ -12,8 +12,8 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import br.com.antlr.hplsql.antlr.HplsqlLexer;
-import br.com.antlr.hplsql.antlr.HplsqlParser;
+import br.com.antlr.hplsql.antlr.hive.HplsqlLexer;
+import br.com.antlr.hplsql.antlr.hive.HplsqlParser;
 import br.com.antlr.hplsql.dto.ArvoreSintaticaDto;
 import br.com.antlr.hplsql.dto.EntradaComandoDto;
 import br.com.antlr.hplsql.dto.RegraPraticaDto;
